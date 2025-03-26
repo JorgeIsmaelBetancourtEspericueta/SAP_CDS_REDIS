@@ -1,4 +1,4 @@
-id,name,description,time,risk
+ID,NAME,DESCRIPTION,TIME,RISK
 1,Conservadora,Inversión a largo plazo con bajo riesgo,10:00,1.2
 2,Moderada,Diversificación en distintos activos,12:30,2.5
 3,Agresiva,Alto rendimiento con mayor volatilidad,14:45,4.8
