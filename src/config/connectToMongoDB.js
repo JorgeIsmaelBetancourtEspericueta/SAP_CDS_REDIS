@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const dotEnvX = require("./dotenvXconfig.js");
+import mongoose from "mongoose";
+import dotEnvX from "./dotenvXconfig.js";
 
 (async () => {
   try {

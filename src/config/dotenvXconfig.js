@@ -1,5 +1,6 @@
-const dotenvx = require("@dotenvx/dotenvx");
+import dotenvx from "@dotenvx/dotenvx";
 dotenvx.config();
+
 export default {
   HOST: process.env.HOST || "No encontré variable localhost",
   PORT: process.env.PORT || "No encontré PORT",
