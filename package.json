@@ -6,9 +6,11 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.39.0",
     "@sap/cds": "^8",
     "cors": "^2.8.5",
-    "express": "^4"
+    "express": "^4",
+    "mongoose": "^8.13.0"
   },
   "files": [
     "src"
