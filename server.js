@@ -17,8 +17,8 @@ module.exports = async (o) => {
 
     //Routes
     //app.use('/api/auth', auth.router);
-    app.use("/api", router);
-    // app.use(dotenvXconfig.process., router);
+    // app.use("/api", router);
+    app.use(dotenvXconfig.API_URL, router);
 
     // app.get('/', (req,res)=>{
     //     res.end(`SAP CDS esta en ejecución.... ${req.url}`);
