@@ -2,9 +2,9 @@ const express = require("express");
 const cds = require("@sap/cds");
 const cors = require("cors");
 const router = express.Router();
-const connectToMongoDB = require("./src/config/connectToMongoDB");
-const dotenvXconfig = require("./src/config/dotenvXconfig");
-const mongoose = require("mongoose");
+const mongoose = require("./src/config/connectToMongoDB");
+const dotenvXconfig = require("./src/config/dotenvXconfig.js");
+//const mongoose = require("mongoose");
 
 module.exports = async (o) => {
   try {

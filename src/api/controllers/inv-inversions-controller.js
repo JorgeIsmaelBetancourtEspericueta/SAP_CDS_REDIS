@@ -2,6 +2,7 @@
 
 const cds = require("@sap/cds");
 
+const {GetAllPricesHistory} = require("../services/inv-pricehistory-services");
 //Principal structure controller class
 
 class InversionsClass extends cds.ApplicationService {
