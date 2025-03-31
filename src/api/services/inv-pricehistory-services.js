@@ -178,15 +178,30 @@ async function AddOnePricesHistoryRedis(req) {
     // Guardar el valor en Redis usando el comando SET
     await cliente.set(key, valueToStore);
 
-    // Retornar una respuesta exitosa
+    // Obtener los datos recién insertados para mostrarlos
+    const storedData = await cliente.get(key);
+
+    // Retornar una respuesta exitosa junto con los datos insertados
     return {
-      message: `Los datos con la clave ${key} se agregaron exitosamente a Redis.`,
+      "Datos insertados": JSON.parse(storedData), // Convertir a objeto para retornarlo
     };
   } catch (error) {
     // Manejo de errores y log
     console.error("Error:", error.message);
     throw new Error(`Error al agregar datos a redis: ${error.message}`);
   }
+}
+
+async function DeleteOnePricesHistoryRedis(req) {
+  try{
+    const key = req.req.query?.key; // Obtener la clave desde la URL
+
+  } catch (error) {
+    // Manejo de errores y log
+    console.error("Error:", error.message);
+    throw new Error(`Error al agregar datos a redis: ${error.message}`);
+  }
+
 }
 
 module.exports = {
