@@ -52,6 +52,8 @@ class InversionsClass extends cds.ApplicationService {
       // call the service method and return the result to route.
       return AddOnePricesHistoryRedis(req);
     });
+
+    
     //If not execute any method, the system will return the defsult CSV data model.
     //gets local data and returns the metadata with the route localhost:3333/api/inv/priceshistory
     //Note: the file name with extension .csv must called equal than the data model;

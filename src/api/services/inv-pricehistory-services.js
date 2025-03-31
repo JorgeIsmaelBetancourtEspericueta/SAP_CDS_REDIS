@@ -134,7 +134,6 @@ async function GetAllPricesHistoryRedis(req) {
 
     // Devolver todos los resultados
     return allData;
-    
   } catch (error) {
     throw new Error(`Error al obtener los datos de  Redis: ${error.message}`);
   }
@@ -152,10 +151,9 @@ async function GetByIdPricesHistoryRedis(req) {
     const value = await cliente.get(key);
 
     return JSON.parse(value);
-    
   } catch (error) {
     console.error("Error:", error.message);
-    throw new Error(`Error fetching data from Redis: ${error.message}`);
+    throw new Error(`Error al obtener los datos: ${error.message}`);
   }
 }
 
@@ -166,12 +164,12 @@ async function AddOnePricesHistoryRedis(req) {
 
     // Validar si la clave existe
     if (!key) {
-      throw new Error("The 'key' parameter is required.");
+      throw new Error("El parámetro 'key' es obligatorio.");
     }
 
     // Validar si los datos del body están presentes
     if (!newPrices || Object.keys(newPrices).length === 0) {
-      throw new Error("The body must contain data to be added.");
+      throw new Error("El body debe contener los datos que se agregarán.");
     }
 
     // Convertir el objeto de precios a string JSON para almacenarlo en Redis
@@ -181,11 +179,13 @@ async function AddOnePricesHistoryRedis(req) {
     await cliente.set(key, valueToStore);
 
     // Retornar una respuesta exitosa
-    return { message: `Data with key ${key} successfully added to Redis.` };
+    return {
+      message: `Los datos con la clave ${key} se agregaron exitosamente a Redis.`,
+    };
   } catch (error) {
     // Manejo de errores y log
     console.error("Error:", error.message);
-    throw new Error(`Error adding data to Redis: ${error.message}`);
+    throw new Error(`Error al agregar datos a redis: ${error.message}`);
   }
 }
 
