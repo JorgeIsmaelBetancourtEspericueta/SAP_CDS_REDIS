@@ -10,7 +10,9 @@
     "@sap/cds": "^8",
     "cors": "^2.8.5",
     "express": "^4",
-    "mongoose": "^8.13.0"
+    "ioredis": "^5.6.0",
+    "mongoose": "^8.13.0",
+    "redis": "^4.7.0"
   },
   "files": [
     "src"

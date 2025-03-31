@@ -2,7 +2,15 @@
 
 const cds = require("@sap/cds");
 
-const {GetAllPricesHistory} = require("../services/inv-pricehistory-services");
+const {
+  GetAllPricesHistory,
+  AddOnePricesHistory,
+  UpdateOnePriceHistory,
+  DeleteOnePriceHistory,
+  GetAllPricesHistoryRedis,
+  GetByIdPricesHistoryRedis,
+  AddOnePricesHistoryRedis,
+} = require("../services/inv-pricehistory-services");
 //Principal structure controller class
 
 class InversionsClass extends cds.ApplicationService {
@@ -12,6 +20,37 @@ class InversionsClass extends cds.ApplicationService {
     this.on("getall", async (req) => {
       // call the service method and return the result to route.
       return GetAllPricesHistory(req);
+    });
+
+    //Agregar una
+    this.on("addOne", async (req) => {
+      // call the service method and return the result to route.
+      return AddOnePricesHistory(req);
+    });
+
+    //Actualizar una
+    this.on("updateOne", async (req) => {
+      return UpdateOnePriceHistory(req);
+    });
+
+    this.on("deleteOne", async (req) => {
+      // call the service method and return the result to route.
+      return DeleteOnePriceHistory(req);
+    });
+
+    this.on("getRedis", async (req) => {
+      // call the service method and return the result to route.
+      return GetAllPricesHistoryRedis(req);
+    });
+
+    this.on("getByIdRedis", async (req) => {
+      // call the service method and return the result to route.
+      return GetByIdPricesHistoryRedis(req);
+    });
+
+    this.on("addOneRedis", async (req) => {
+      // call the service method and return the result to route.
+      return AddOnePricesHistoryRedis(req);
     });
     //If not execute any method, the system will return the defsult CSV data model.
     //gets local data and returns the metadata with the route localhost:3333/api/inv/priceshistory

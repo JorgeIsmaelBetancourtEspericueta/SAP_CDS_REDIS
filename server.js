@@ -4,6 +4,7 @@ const cors = require("cors");
 const router = express.Router();
 const mongoose = require("./src/config/connectToMongoDB");
 const dotenvXconfig = require("./src/config/dotenvXconfig.js");
+// const redis = require("./src/config/connectToRedis.js");
 //const mongoose = require("mongoose");
 
 module.exports = async (o) => {
