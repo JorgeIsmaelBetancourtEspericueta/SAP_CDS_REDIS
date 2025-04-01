@@ -10,6 +10,8 @@ const {
   GetAllPricesHistoryRedis,
   GetByIdPricesHistoryRedis,
   AddOnePricesHistoryRedis,
+  UpdateOnePriceHistoryRedis,
+  DeleteOnePricesHistoryRedis,
 } = require("../services/inv-pricehistory-services");
 //Principal structure controller class
 
@@ -53,7 +55,16 @@ class InversionsClass extends cds.ApplicationService {
       return AddOnePricesHistoryRedis(req);
     });
 
-    
+    this.on("updateOneRedis", async (req) => {
+      // call the service method and return the result to route.
+      return UpdateOnePriceHistoryRedis(req);
+    });
+
+    this.on("deleteOneRedis", async (req) => {
+      // call the service method and return the result to route.
+      return DeleteOnePricesHistoryRedis(req);
+    });
+
     //If not execute any method, the system will return the defsult CSV data model.
     //gets local data and returns the metadata with the route localhost:3333/api/inv/priceshistory
     //Note: the file name with extension .csv must called equal than the data model;
