@@ -12,6 +12,7 @@ const {
   AddOnePricesHistoryRedis,
   UpdateOnePriceHistoryRedis,
   DeleteOnePricesHistoryRedis,
+  GetLabelsWithValues,
 } = require("../services/inv-pricehistory-services");
 //Principal structure controller class
 
@@ -40,6 +41,14 @@ class InversionsClass extends cds.ApplicationService {
       return DeleteOnePriceHistory(req);
     });
 
+
+    this.on("getCatalog", async (req) => {
+      // call the service method and return the result to route.
+      return GetLabelsWithValues(req);
+    });
+
+
+    //-------------------------------------------------Redis---------------------------------------------------
     this.on("getRedis", async (req) => {
       // call the service method and return the result to route.
       return GetAllPricesHistoryRedis(req);

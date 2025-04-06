@@ -1,5 +1,6 @@
 const ztpricehistory = require("../models/mongoDB/ztpricehistory");
 const cliente = require("../../config/connectToRedis");
+const mongoose = require('mongoose');
 
 async function GetAllPricesHistory(req) {
   try {
@@ -102,7 +103,36 @@ async function DeleteOnePriceHistory(req) {
   }
 }
 
-//------------------------REDIS---------------------
+
+// Servicio para hacer el lookup entre ZTLABELS y ZTVALUES
+async function GetLabelsWithValues() {
+  try {
+    const result = await mongoose.connection
+      .collection("ZTLABELS")
+      .aggregate([
+        {
+          $lookup: {
+            from: "ZTVALUES",
+            localField: "LABELID",
+            foreignField: "LABELID",
+            as: "VALUES"
+          }
+        }
+      ])
+      .toArray();
+
+    return result;
+  } catch (error) {
+    console.error("Error en la agregación con $lookup:", error.message);
+    throw error;
+  }
+}
+
+
+
+
+
+//-------------------------------------------------------REDIS------------------------------------------------------------
 async function GetAllPricesHistoryRedis(req) {
   try {
     // Obtener todas las claves desde Redis
@@ -278,4 +308,5 @@ module.exports = {
   AddOnePricesHistoryRedis,
   UpdateOnePriceHistoryRedis,
   DeleteOnePricesHistoryRedis,
+  GetLabelsWithValues,
 };

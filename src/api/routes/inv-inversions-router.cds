@@ -36,6 +36,12 @@ service PricesHistoryRouter @(path: '/api/inv') {
     @path            : 'deleteOne'
     action   deleteOne()                         returns array of priceshistory;
 
+
+    @Core.Description: 'get-Catalog'
+    @path            : 'getCatalog'
+    function getCatalog()                            returns array of priceshistory;
+    //------------------Redis-----------------------------------------------
+
     @Core.Description: 'get-prices-history-redis'
     @path            : 'getRedis'
     function getRedis()                          returns array of priceshistory;
