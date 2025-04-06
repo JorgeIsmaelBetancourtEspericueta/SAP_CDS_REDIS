@@ -10,7 +10,7 @@ using {inv as myinv} from '../models/inv-inversions';
 // 3. Define the method to expose the routes
 // for all APIs of prices history
 
-service securityRouter @(path: '/api/sec') {
+service securityRouter @(path: '/api/security') {
 
     // 4. Instance the prices history entity
     entity priceshistory as projection on myinv.priceshistory;
@@ -19,5 +19,9 @@ service securityRouter @(path: '/api/sec') {
     @Core.Description: 'get-Catalog'
     @path            : 'getCatalog'
     function getCatalog() returns array of priceshistory;
+
+    @Core.Description: 'get-users'
+    @path            : 'getusers'
+    function getusers() returns array of priceshistory;
 
 };
