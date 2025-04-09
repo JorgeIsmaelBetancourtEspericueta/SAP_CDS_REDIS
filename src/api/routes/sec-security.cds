@@ -1,27 +1,26 @@
 // 1. Import the data model
-// using {inv as myph} from '../models/inv-priceshistory';
-
-using {inv as myinv} from '../models/inv-inversions';
+using {sec as mysec} from '../models/sec-users';
 
 // 2. Import the controller to implement the Logic
-
 @impl: 'src/api/controllers/sec-security-controller'
 
 // 3. Define the method to expose the routes
-// for all APIs of prices history
+// for all APIs of user security
 
 service securityRouter @(path: '/api/security') {
 
-    // 4. Instance the prices history entity
-    entity priceshistory as projection on myinv.priceshistory;
-
+    // 4. Instance the users entity
+    entity entusers as projection on mysec.users;
 
     @Core.Description: 'get-Catalog'
-    @path            : 'getCatalog'
-    function getCatalog() returns array of priceshistory;
+    @path            : 'catalogs'
+    function catalogs()                   returns array of entusers;
 
     @Core.Description: 'get-users'
-    @path            : 'getusers'
-    function getusers() returns array of priceshistory;
+    @path            : 'users'
+    function users()                      returns array of entusers;
 
+    @Core.Description: 'create-user'
+    @path            : 'createuser'
+    action   createuser(users : entusers) returns array of entusers;
 };

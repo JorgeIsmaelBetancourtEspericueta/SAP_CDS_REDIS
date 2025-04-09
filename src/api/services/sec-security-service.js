@@ -79,7 +79,6 @@ async function GetLabelsWithValues(req) {
   }
 }
 
-//Obtener información de los usuarios
 // Servicio para obtener usuarios con sus roles, procesos, vistas y aplicaciones
 async function GetUserInfo(req) {
   try {
@@ -553,7 +552,100 @@ async function GetUserInfo(req) {
   }
 }
 
+// Servicio para crear un nuevo usuario
+async function CreateUser(req) {
+  try {
+    const {
+      USERID,
+      USERNAME,
+      ALIAS,
+      FIRSTNAME,
+      LASTNAME,
+      BIRTHDAYDATE,
+      COMPANYID,
+      COMPANYNAME,
+      COMPANYALIAS,
+      CEDIID,
+      EMPLOYEEID,
+      EMAIL,
+      PHONENUMBER,
+      EXTENSION,
+      DEPARTMENT,
+      FUNCTION,
+      STREET,
+      POSTALCODE,
+      CITY,
+      REGION,
+      STATE,
+      COUNTRY,
+      ROLES,
+      reguser,
+    } = req?.req?.body?.users; // Accediendo a la clave "users"
+
+    // Obtener la fecha y hora actual
+    const currentDate = new Date();
+
+    // Crear el objeto de DETAIL_ROW_REG con el registro actual
+    const detailRowReg = [
+      {
+        CURRENT: false,
+        REGDATE: currentDate,
+        REGTIME: currentDate,
+        REGUSER: reguser,
+      },
+      {
+        CURRENT: true,
+        REGDATE: currentDate,
+        REGTIME: currentDate,
+        REGUSER: reguser,
+      },
+    ];
+
+    // Crear el nuevo objeto de usuario
+    const newUser = {
+      USERID,
+      USERNAME,
+      ALIAS: ALIAS || "",
+      FIRSTNAME,
+      LASTNAME,
+      BIRTHDAYDATE: BIRTHDAYDATE || "",
+      COMPANYID: COMPANYID || "",
+      COMPANYNAME: COMPANYNAME || "",
+      COMPANYALIAS: COMPANYALIAS || "",
+      CEDIID: CEDIID || "",
+      EMPLOYEEID: EMPLOYEEID || "",
+      EMAIL,
+      PHONENUMBER: PHONENUMBER || "",
+      EXTENSION: EXTENSION || "",
+      DEPARTMENT: DEPARTMENT || "",
+      FUNCTION: FUNCTION || "",
+      STREET: STREET || "",
+      POSTALCODE: POSTALCODE || "",
+      CITY: CITY || "",
+      REGION: REGION || "",
+      STATE: STATE || "",
+      COUNTRY: COUNTRY || "",
+      DETAIL_ROW_REG: detailRowReg, // Agregar el detalle de registro
+      ROLES: ROLES || [], // Roles asignados al usuario
+    };
+
+    // Insertar el nuevo usuario en la colección
+    const result = await mongoose.connection
+      .collection("ZTUSERS")
+      .insertOne(newUser);
+
+    return {
+      message: "Usuario creado exitosamente",
+      userId: result.insertedId,
+    };
+  } catch (error) {
+    console.error("Error al crear el usuario:", error.message);
+    throw error;
+  }
+}
+
 module.exports = {
   GetLabelsWithValues,
   GetUserInfo,
+  CreateUser,
 };
