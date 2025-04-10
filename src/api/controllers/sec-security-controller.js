@@ -6,6 +6,7 @@ const {
   GetLabelsWithValues,
   GetUserInfo,
   CreateUser,
+  DeleteRecord,
 } = require("../services/sec-security-service");
 //Principal structure controller class
 
@@ -25,6 +26,11 @@ class InversionsClass extends cds.ApplicationService {
     this.on("createuser", async (req) => {
       // call the service method and return the result to route.
       return CreateUser(req);
+    });
+
+    this.on("delete", async (req) => {
+      // call the service method and return the result to route.
+      return DeleteRecord(req);
     });
 
     return await super.init();

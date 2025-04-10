@@ -23,4 +23,8 @@ service securityRouter @(path: '/api/security') {
     @Core.Description: 'create-user'
     @path            : 'createuser'
     action   createuser(users : entusers) returns array of entusers;
+
+    @Core.Description: 'delete-fisico-logico'
+    @path            : 'delete'
+    action   delete()                     returns array of entusers;
 };
