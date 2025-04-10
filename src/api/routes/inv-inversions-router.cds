@@ -22,37 +22,37 @@ service PricesHistoryRouter @(path: '/api/inv') {
 
     @Core.Description: 'get-all-prices-history'
     @path            : 'getall'
-    function getall()                            returns array of priceshistory;
+    function getall()                               returns array of priceshistory;
 
     @Core.Description: 'add-one-prices-history'
     @path            : 'addOne'
-    action   addOne(prices : priceshistory)      returns array of priceshistory;
+    action   addOne(prices : priceshistory)         returns array of priceshistory;
 
     @Core.Description: 'update-one-prices-history'
     @path            : 'updateOne'
-    action   updateOne(prices : priceshistory)   returns array of priceshistory;
+    action   updateOne(prices : priceshistory)      returns array of priceshistory;
 
     @Core.Description: 'delete-one-prices-history'
     @path            : 'deleteOne'
-    action   deleteOne()                         returns array of priceshistory;
+    action   deleteOne()                            returns array of priceshistory;
 
 
     @Core.Description: 'get-Catalog'
     @path            : 'getCatalog'
-    function getCatalog()                            returns array of priceshistory;
+    function getCatalog()                           returns array of priceshistory;
     //------------------Redis-----------------------------------------------
 
     @Core.Description: 'get-prices-history-redis'
     @path            : 'getRedis'
-    function getRedis()                          returns array of priceshistory;
+    function getRedis()                             returns array of priceshistory;
 
     @Core.Description: 'get-by-id-prices-history-redis'
     @path            : 'getByIdRedis'
-    function getByIdRedis()                      returns array of priceshistory;
+    function getByIdRedis()                         returns array of priceshistory;
 
     @Core.Description: 'add-one-id-prices-history-redis'
     @path            : 'addOneRedis'
-    action   addOneRedis(prices : priceshistory) returns array of priceshistory;
+    action   addOneRedis(prices : priceshistory)    returns array of priceshistory;
 
     @Core.Description: 'update-one-id-prices-history-redis'
     @path            : 'updateOneRedis'
@@ -60,5 +60,5 @@ service PricesHistoryRouter @(path: '/api/inv') {
 
     @Core.Description: 'delete-one-prices-history-redis'
     @path            : 'deleteOneRedis'
-    action   deleteOneRedis()                    returns array of priceshistory;
+    action   deleteOneRedis()                       returns array of priceshistory;
 };
