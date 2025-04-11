@@ -1,6 +1,6 @@
 const ztpricehistory = require("../models/mongoDB/ztpricehistory");
 const cliente = require("../../config/connectToRedis");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 async function GetAllPricesHistory(req) {
   try {
@@ -103,7 +103,6 @@ async function DeleteOnePriceHistory(req) {
   }
 }
 
-
 // Servicio para hacer el lookup entre ZTLABELS y ZTVALUES
 async function GetLabelsWithValues() {
   try {
@@ -115,9 +114,9 @@ async function GetLabelsWithValues() {
             from: "ZTVALUES",
             localField: "LABELID",
             foreignField: "LABELID",
-            as: "VALUES"
-          }
-        }
+            as: "VALUES",
+          },
+        },
       ])
       .toArray();
 
@@ -128,62 +127,49 @@ async function GetLabelsWithValues() {
   }
 }
 
-
-
-
-
 //-------------------------------------------------------REDIS------------------------------------------------------------
-async function GetAllPricesHistoryRedis(req) {
+async function GetAllPHRedis(req) {
   try {
     // Obtener todas las claves desde Redis
     const allKeys = await cliente.keys("*");
 
-    if (!allKeys || allKeys.length === 0) {
-      throw new Error("No se encontraron las keys");
-    }
-
-    // Array para almacenar los resultados
-    const allData = [];
-
-    // Iterar sobre todas las claves obtenidas
-    for (const key of allKeys) {
-      // Obtener el valor de cada clave
-      const value = await cliente.get(key);
-
-      // Verificar si se obtuvo un valor
-      if (value) {
-        try {
-          // Intentar parsear el valor si es posible
-          allData.push({ key, value: JSON.parse(value) });
-        } catch (parseError) {
-          // Si no se puede parsear, almacenar el valor tal cual
-          allData.push({ key, value });
-        }
-      }
-    }
-
-    // Devolver todos los resultados
-    return allData;
-  } catch (error) {
-    throw new Error(`Error al obtener los datos de  Redis: ${error.message}`);
-  }
-}
-
-async function GetByIdPricesHistoryRedis(req) {
-  try {
     const key = req.req.query?.key;
 
-    if (!key) {
-      throw new Error("El parámetro 'key' es obligatorio.");
+    if (key) {
+      // Obtener el valor desde Redis (sin RedisJSON, usando el comando estándar GET)
+      const value = await cliente.get(key);
+
+      return JSON.parse(value);
+    } else {
+      if (!allKeys || allKeys.length === 0) {
+        throw new Error("No se encontraron las keys");
+      }
+
+      // Array para almacenar los resultados
+      const allData = [];
+
+      // Iterar sobre todas las claves obtenidas
+      for (const key of allKeys) {
+        // Obtener el valor de cada clave
+        const value = await cliente.get(key);
+
+        // Verificar si se obtuvo un valor
+        if (value) {
+          try {
+            // Intentar parsear el valor si es posible
+            allData.push({ key, value: JSON.parse(value) });
+          } catch (parseError) {
+            // Si no se puede parsear, almacenar el valor tal cual
+            allData.push({ key, value });
+          }
+        }
+      }
+
+      // Devolver todos los resultados
+      return allData;
     }
-
-    // Obtener el valor desde Redis (sin RedisJSON, usando el comando estándar GET)
-    const value = await cliente.get(key);
-
-    return JSON.parse(value);
   } catch (error) {
-    console.error("Error:", error.message);
-    throw new Error(`Error al obtener los datos: ${error.message}`);
+    throw new Error(`Error al obtener los datos de  Redis: ${error.message}`);
   }
 }
 
@@ -303,8 +289,7 @@ module.exports = {
   AddOnePricesHistory,
   UpdateOnePriceHistory,
   DeleteOnePriceHistory,
-  GetAllPricesHistoryRedis,
-  GetByIdPricesHistoryRedis,
+  GetAllPHRedis,
   AddOnePricesHistoryRedis,
   UpdateOnePriceHistoryRedis,
   DeleteOnePricesHistoryRedis,

@@ -46,10 +46,6 @@ service PricesHistoryRouter @(path: '/api/inv') {
     @path            : 'getRedis'
     function getRedis()                             returns array of priceshistory;
 
-    @Core.Description: 'get-by-id-prices-history-redis'
-    @path            : 'getByIdRedis'
-    function getByIdRedis()                         returns array of priceshistory;
-
     @Core.Description: 'add-one-id-prices-history-redis'
     @path            : 'addOneRedis'
     action   addOneRedis(prices : priceshistory)    returns array of priceshistory;
