@@ -7,7 +7,7 @@ const {
   AddOnePricesHistory,
   UpdateOnePriceHistory,
   DeleteOnePriceHistory,
-  GetAllPHRedis,
+  GetRedis,
   AddOnePricesHistoryRedis,
   UpdateOnePriceHistoryRedis,
   DeleteOnePricesHistoryRedis,
@@ -48,7 +48,7 @@ class InversionsClass extends cds.ApplicationService {
     //-------------------------------------------------Redis---------------------------------------------------
     this.on("getRedis", async (req) => {
       // call the service method and return the result to route.
-      return GetAllPHRedis(req);
+      return GetRedis(req);
     });
 
     this.on("addOneRedis", async (req) => {

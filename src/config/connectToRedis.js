@@ -8,15 +8,8 @@ const client = createClient({
   url: dotEnvX.REDIS_URL, // Cambia a REDIS_URL
 });
 
-// Escuchar errores de conexión
-client.on("error", (err) => {
-  if (!hasErrorLogged) {
-    console.error("Error en la conexión a Redis:", err.message);
-    hasErrorLogged = true;
-  }
-});
 
-// Intentar conectar a Redis
+// Función para conectar a Redis
 async function connectRedis() {
   try {
     await client.connect();

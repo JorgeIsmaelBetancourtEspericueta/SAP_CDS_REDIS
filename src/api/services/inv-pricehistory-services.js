@@ -128,11 +128,8 @@ async function GetLabelsWithValues() {
 }
 
 //-------------------------------------------------------REDIS------------------------------------------------------------
-async function GetAllPHRedis(req) {
+async function GetRedis(req) {
   try {
-    // Obtener todas las claves desde Redis
-    const allKeys = await cliente.keys("*");
-
     const key = req.req.query?.key;
 
     if (key) {
@@ -141,8 +138,11 @@ async function GetAllPHRedis(req) {
 
       return JSON.parse(value);
     } else {
+      // Obtener todas las claves desde Redis
+      const allKeys = await cliente.keys("*");
+      
       if (!allKeys || allKeys.length === 0) {
-        throw new Error("No se encontraron las keys");
+        return "No se encontraron las keys";
       }
 
       // Array para almacenar los resultados
@@ -289,7 +289,7 @@ module.exports = {
   AddOnePricesHistory,
   UpdateOnePriceHistory,
   DeleteOnePriceHistory,
-  GetAllPHRedis,
+  GetRedis,
   AddOnePricesHistoryRedis,
   UpdateOnePriceHistoryRedis,
   DeleteOnePricesHistoryRedis,
