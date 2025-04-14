@@ -140,7 +140,7 @@ async function GetRedis(req) {
     } else {
       // Obtener todas las claves desde Redis
       const allKeys = await cliente.keys("*");
-      
+
       if (!allKeys || allKeys.length === 0) {
         return "No se encontraron las keys";
       }
@@ -180,13 +180,48 @@ async function AddOnePricesHistoryRedis(req) {
 
     // Validar si la clave existe
     if (!key) {
-      throw new Error("El parámetro 'key' es obligatorio.");
+      throw new Error("El parámetro 'key' es obligatorio."); // Mensaje de error en caso de no proporcionar la clave
     }
 
-    // Validar si los datos del body están presentes
-    if (!newPrices || Object.keys(newPrices).length === 0) {
-      throw new Error("El body debe contener los datos que se agregarán.");
+    // Verificar si la clave ya existe en Redis
+    const keyExists = await cliente.exists(key);
+    if (keyExists) {
+      return `La clave '${key}' ya existe en Redis. Por favor utiliza otra clave o actualiza los datos existentes.`; // Mensaje de error si la clave ya está presente
     }
+
+    // Validar estructura básica de la entidad priceshistory
+    const validateEntityStructure = (prices) => {
+      if (
+        !prices.ID ||
+        !prices.DATE ||
+        !prices.OPEN ||
+        !prices.HIGH ||
+        !prices.LOW ||
+        !prices.CLOSE ||
+        !prices.VOLUME
+      ) {
+        return "La estructura del objeto no coincide con la entidad 'priceshistory'."; // Mensaje de error si la estructura no es válida
+      }
+    };
+
+    // Validar la estructura de los nuevos datos
+    validateEntityStructure(newPrices);
+
+    // Definir automáticamente el campo DETAIL_ROW
+    newPrices.DETAIL_ROW = [
+      {
+        ACTIVED: true, // Valor predeterminado
+        DELETED: false, // Valor predeterminado
+        DETAIL_ROW_REG: [
+          {
+            CURRENT: true, // Valor predeterminado
+            REGDATE: new Date().toISOString().split("T")[0], // Fecha actual
+            REGTIME: new Date().toISOString().split("T")[1], // Hora actual
+            REGUSER: "system_user", // Usuario predeterminado
+          },
+        ],
+      },
+    ];
 
     // Convertir el objeto de precios a string JSON para almacenarlo en Redis
     const valueToStore = JSON.stringify(newPrices);
@@ -197,14 +232,13 @@ async function AddOnePricesHistoryRedis(req) {
     // Obtener los datos recién insertados para mostrarlos
     const storedData = await cliente.get(key);
 
-    // Retornar una respuesta exitosa junto con los datos insertados
     return {
       "Datos insertados": JSON.parse(storedData), // Convertir a objeto para retornarlo
     };
   } catch (error) {
     // Manejo de errores y log
     console.error("Error:", error.message);
-    throw new Error(`Error al agregar datos a redis: ${error.message}`);
+    throw new Error(`Error al agregar datos a Redis: ${error.message}`); // Mensaje de error general
   }
 }
 
