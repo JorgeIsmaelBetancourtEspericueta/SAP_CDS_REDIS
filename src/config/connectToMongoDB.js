@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import dotEnvX from "./dotenvXconfig.js";
+const mongoose=require("mongoose");
+const dotEnvX=require("./dotenvXconfig.js");
 
 (async () => {
   try {
