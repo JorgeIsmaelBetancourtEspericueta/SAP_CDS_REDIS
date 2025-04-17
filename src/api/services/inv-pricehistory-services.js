@@ -245,42 +245,66 @@ async function AddOnePricesHistoryRedis(req) {
 async function UpdateOnePriceHistoryRedis(req) {
   try {
     const key = req.req.query?.key;
-    const newPrices = req.req.body?.prices; // Obtener los datos nuevos del body de la solicitud
+    const newPrices = req.req.body?.prices;
+    const regUser = req.req.body?.user || "system_user";
 
-    // Validar si la clave existe
     if (!key) {
       throw new Error("El parámetro 'key' es obligatorio.");
     }
 
-    // Validar si los datos del body están presentes
     if (!newPrices || Object.keys(newPrices).length === 0) {
-      throw new Error("El body debe contener los datos que se agregarán.");
+      throw new Error("El body debe contener los datos que se actualizarán.");
     }
 
-    // Verificar si la clave existe antes de actualizar
     const exists = await cliente.exists(key);
     if (!exists) {
-      throw new Error(
-        `La clave '${key}' no existe en Redis. No se puede actualizar.`
-      );
+      throw new Error(`La clave '${key}' no existe en Redis.`);
     }
 
-    // Convertir el objeto de precios a string JSON para almacenarlo en Redis
-    const valueToStore = JSON.stringify(newPrices);
+    // Obtener los datos actuales
+    const currentDataStr = await cliente.get(key);
+    const currentData = JSON.parse(currentDataStr);
 
-    // Actualizar el valor en Redis usando el comando SET
-    await cliente.set(key, valueToStore);
+    // Lista de campos válidos para actualizar
+    const validFields = ["DATE", "OPEN", "HIGH", "LOW", "CLOSE", "VOLUME"];
 
-    // Obtener los datos actualizados para mostrarlos
-    const storedData = await cliente.get(key);
+    // Actualizar solo los campos válidos presentes en newPrices
+    validFields.forEach(field => {
+      if (newPrices[field] !== undefined) {
+        currentData[field] = newPrices[field];
+      }
+    });
 
-    // Retornar una respuesta exitosa junto con los datos actualizados
+    // Manejar DETAIL_ROW_REG
+    if (!Array.isArray(currentData.DETAIL_ROW_REG)) {
+      currentData.DETAIL_ROW_REG = [];
+    } else {
+      currentData.DETAIL_ROW_REG.forEach(row => {
+        row.CURRENT = false; // Desactivar registros anteriores
+      });
+    }
+
+    // Fecha y hora actual
+    const now = new Date();
+    const regDate = now.toISOString().split("T")[0]; // yyyy-mm-dd
+    const regTime = now.toTimeString().split(" ")[0]; // hh:mm:ss
+
+    // Agregar nuevo registro
+    currentData.DETAIL_ROW_REG.push({
+      CURRENT: true,
+      REGDATE: regDate,
+      REGTIME: regTime,
+      REGUSER: regUser
+    });
+
+    // Guardar el objeto actualizado
+    await cliente.set(key, JSON.stringify(currentData));
+
     return {
       message: `Los datos con la clave '${key}' fueron actualizados exitosamente.`,
-      updatedData: JSON.parse(storedData), // Convertir a objeto para retornarlo
+      updatedData: currentData
     };
   } catch (error) {
-    // Manejo de errores y log
     console.error("Error:", error.message);
     throw new Error(`Error al actualizar datos en Redis: ${error.message}`);
   }
@@ -288,32 +312,55 @@ async function UpdateOnePriceHistoryRedis(req) {
 
 async function DeleteOnePricesHistoryRedis(req) {
   try {
-    const key = req.req.query?.key; // Obtener la clave desde la URL
+    const key = req.req.query?.key;
+    const tipoBorrado = req.req.query?.borrado;
 
-    // Validar si la clave existe
     if (!key) {
       throw new Error("El parámetro 'key' es obligatorio.");
     }
 
-    // Verificar si la clave existe antes de eliminarla
+    if (tipoBorrado !== "logic" && tipoBorrado !== "fisic") {
+      throw new Error("El parámetro 'borrado' debe ser 'logic' o 'fisic'.");
+    }
+
     const exists = await cliente.exists(key);
     if (!exists) {
-      throw new Error(`La clave ${key} no existe en Redis.`);
+      throw new Error(`La clave '${key}' no existe en Redis.`);
     }
 
-    // Eliminar la clave de Redis
-    const result = await cliente.del(key);
+    // Obtener el objeto actual
+    const currentDataStr = await cliente.get(key);
+    const currentData = JSON.parse(currentDataStr);
 
-    // Verificar si la eliminación fue exitosa
-    if (result === 1) {
-      return {
-        message: `Los datos con la clave ${key} fueron eliminados exitosamente de Redis.`,
-      };
-    } else {
-      throw new Error(`No se pudo eliminar la clave ${key}.`);
+    if (!Array.isArray(currentData.DETAIL_ROW)) {
+      throw new Error("No se encontró la propiedad DETAIL_ROW en el objeto.");
     }
+
+    // Aplicar el tipo de borrado
+    currentData.DETAIL_ROW = currentData.DETAIL_ROW.map(row => {
+      if (tipoBorrado === "logic") {
+        return {
+          ...row,
+          ACTIVED: false
+        };
+      } else {
+        return {
+          ...row,
+          ACTIVED: false,
+          DELETED: true
+        };
+      }
+    });
+
+    // Guardar de nuevo en Redis
+    await cliente.set(key, JSON.stringify(currentData));
+
+    return {
+      message: `La clave '${key}' fue marcada como eliminada (${tipoBorrado === "logic" ? "lógica" : "física"}) exitosamente.`,
+      updatedData: currentData
+    };
+
   } catch (error) {
-    // Manejo de errores y log
     throw new Error(`Error al eliminar datos de Redis: ${error.message}`);
   }
 }
